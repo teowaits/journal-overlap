@@ -2,7 +2,9 @@
 
 A browser-based research tool for discovering **authorship overlap between two sets of academic journals**, powered by the [OpenAlex](https://openalex.org) open scholarly metadata API.
 
-Given two sets of journals (Set A and Set B), the app finds all authors who have published in **both** sets since 2023, then surfaces insights across five analytical views.
+Given two sets of journals (Set A and Set B), the app finds all authors who have published in **both** sets (configurable start year), then surfaces insights across four analytical views.
+
+**Live demo:** [https://ipattis.github.io/journal-overlap/](https://ipattis.github.io/journal-overlap/)
 
 ---
 
@@ -86,6 +88,15 @@ This tool was built with the assistance of [Claude Sonnet 4.6](https://www.anthr
 - `select=` field filtering to minimise response payload
 - Year-chunked pagination to stay within the 10k result paging wall
 - Client-side intersection and analytics to avoid redundant API calls
+
+---
+
+## Changelog
+
+| Version | Date | Changes |
+|---------|------|---------|
+| **1.1.0** | 2026-03-11 | CSV export on all tabs; shareable URLs with `?a=...&b=...` and Copy Link button; configurable start year (2020–2025); mobile-responsive tables; empty-state onboarding with example comparisons; parallel API fetching (4x concurrency); paginated author list (50 at a time); retry with backoff on 429/5xx errors; codebase split from 1 file into 12 modules; global CSS extracted to stylesheet; Open Graph / Twitter meta tags; SVG favicon; GitHub Pages deployment via Actions |
+| **1.0.0** | 2025-XX-XX | Initial release — journal search, author overlap, journal pairs, institution & topic analysis |
 
 ---
 
