@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0d111c; }
+::-webkit-scrollbar-thumb { background: #2d3449; border-radius: 3px; }
+
+input::placeholder, textarea::placeholder { color: #2d3449; }
+input, textarea, button, select { font-family: inherit; }
+
+@media (max-width: 768px) {
+  .author-grid-header, .author-grid-row {
+    grid-template-columns: 28px 1fr 52px 52px 60px !important;
+  }
+  .author-grid-header .hide-mobile, .author-grid-row .hide-mobile { display: none !important; }
+
+  .journal-sets-row { flex-direction: column !important; }
+  .journal-sets-row .sets-divider { display: none !important; }
+
+  .topic-grid-header, .topic-grid-row {
+    grid-template-columns: 28px 1fr 70px 60px 60px !important;
+  }
+  .topic-grid-header .hide-mobile, .topic-grid-row .hide-mobile { display: none !important; }
+
+  .inst-grid-header, .inst-grid-row {
+    grid-template-columns: 28px 1fr 60px 70px !important;
+  }
+  .inst-grid-header .hide-mobile, .inst-grid-row .hide-mobile { display: none !important; }
+}
