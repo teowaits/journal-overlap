@@ -4,7 +4,7 @@ A browser-based research tool for discovering **authorship overlap between two s
 
 Given two sets of journals (Set A and Set B), the app finds all authors who have published in **both** sets (configurable start year), then surfaces insights across four analytical views.
 
-**Live demo:** [https://ipattis.github.io/journal-overlap/](https://ipattis.github.io/journal-overlap/)
+**Live demo:** [https://teowaits.github.io/journal-overlap/](https://teowaits.github.io/journal-overlap/)
 
 ---
 
