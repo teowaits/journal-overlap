@@ -95,6 +95,7 @@ This tool was built with the assistance of [Claude Sonnet 4.6](https://www.anthr
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **1.2.0** | 2026-04-08 | **Authors tab** CSV export now includes a `type` column (value: `author`) and a `Note` column (`from journal-overlap · A × B`). **Topics tab** gains an "Export for Gem Finder" button alongside the existing export; it produces a 4-column CSV (`type`, `OpenAlex ID`, `display_name`, `notes`) covering all topics and subfields combined, ready to import directly into [Gem Finder](https://github.com/teowaits/gem_finder) |
 | **1.1.0** | 2026-03-11 | CSV export on all tabs; shareable URLs with `?a=...&b=...` and Copy Link button; configurable start year (2020–2025); mobile-responsive tables; empty-state onboarding with example comparisons; parallel API fetching (4x concurrency); paginated author list (50 at a time); retry with backoff on 429/5xx errors; codebase split from 1 file into 12 modules; global CSS extracted to stylesheet; Open Graph / Twitter meta tags; SVG favicon; GitHub Pages deployment via Actions |
 | **1.0.0** | 2025-XX-XX | Initial release — journal search, author overlap, journal pairs, institution & topic analysis |
 

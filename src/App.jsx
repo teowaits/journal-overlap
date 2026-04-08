@@ -278,7 +278,7 @@ export default function App() {
         <InstitutionPage results={results} />
       )}
       {activePage === "topics" && hasResults && (
-        <TopicsPage results={results} />
+        <TopicsPage results={results} journalsA={journalsA} journalsB={journalsB} />
       )}
       {!hasResults && activePage !== "dashboard" && (
         <div style={{ padding: "48px 28px", textAlign: "center", color: C.textMuted, fontSize: 13 }}>

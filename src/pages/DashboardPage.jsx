@@ -38,8 +38,8 @@ export default function DashboardPage({ results, totalOverlap, sortKey, setSortK
             <span style={{ marginLeft: "auto", color: C.textMuted, display: "flex", alignItems: "center", gap: 10 }}>
               {sorted.length.toLocaleString()} authors · click row to expand
               <ExportButton onClick={() => downloadCsv("authors-overlap.csv",
-                ["Rank", "Name", "Institution", "Set A Works", "Set B Works", "Overlap Score", "Career Citations", "ORCID", "OpenAlex ID"],
-                sorted.map((a, i) => [i + 1, a.enriched?.display_name || a.id.replace("https://openalex.org/",""), a.enriched?.last_known_institutions?.[0]?.display_name || [...a.institutions][0] || "", a.worksInA, a.worksInB, a.worksInA + a.worksInB, a.enriched?.cited_by_count ?? "", a.enriched?.orcid || "", a.id])
+                ["type", "Rank", "Name", "Institution", "Set A Works", "Set B Works", "Overlap Score", "Career Citations", "ORCID", "OpenAlex ID", "Note"],
+                sorted.map((a, i) => ["author", i + 1, a.enriched?.display_name || a.id.replace("https://openalex.org/",""), a.enriched?.last_known_institutions?.[0]?.display_name || [...a.institutions][0] || "", a.worksInA, a.worksInB, a.worksInA + a.worksInB, a.enriched?.cited_by_count ?? "", a.enriched?.orcid || "", a.id, `from journal-overlap · ${journalsA.map(j => j.display_name).join(", ")} × ${journalsB.map(j => j.display_name).join(", ")}`])
               )} />
             </span>
           </div>

@@ -3,7 +3,7 @@ import { C, LEVEL_LABELS, LEVEL_ORDER } from "../constants.js";
 import { downloadCsv, computeTopicOverlap } from "../utils.js";
 import { ExportButton } from "../components/shared.jsx";
 
-export default function TopicsPage({ results }) {
+export default function TopicsPage({ results, journalsA, journalsB }) {
   const topicData = useMemo(() => computeTopicOverlap(results), [results]);
   const [activeLevel, setActiveLevel] = useState("field");
   const [sortKey, setSortKey] = useState("overlap");
@@ -43,6 +43,20 @@ export default function TopicsPage({ results }) {
             ["Rank", LEVEL_LABELS[activeLevel], "Overlap Authors", "Set A Authors", "Set B Authors", "Set A Works", "Set B Works"],
             sorted.map((row, i) => [i + 1, row.name, row.authorsOverlap, row.authorsA, row.authorsB, row.worksA, row.worksB])
           )} />
+          <ExportButton label="Export for Gem Finder" onClick={() => {
+            const setAName = (journalsA || []).map(j => j.display_name).join(", ");
+            const setBName = (journalsB || []).map(j => j.display_name).join(", ");
+            const note = `from journal-overlap · Topics tab · ${setAName} × ${setBName}`;
+            const allRows = [
+              ...topicData.topic.map(r => ({ ...r, gemType: "topic" })),
+              ...topicData.subfield.map(r => ({ ...r, gemType: "subfield" })),
+            ].sort((a, b) => b.authorsOverlap - a.authorsOverlap);
+            const today = new Date().toISOString().split("T")[0];
+            downloadCsv(`journal-overlap-gem-finder-topics-${today}.csv`,
+              ["type", "OpenAlex ID", "display_name", "notes"],
+              allRows.map(r => [r.gemType, r.id, r.name, note])
+            );
+          }} />
         </div>
 
         <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
