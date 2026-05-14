@@ -42,7 +42,7 @@ export default function DashboardPage({ results, totalOverlap, sortKey, setSortK
                 const j2 = journalsB.map(j => shortId(j.id)).join("|");
                 downloadCsv("authors-overlap.csv",
                   ["type", "Rank", "Name", "Institution", "Set A Works", "Set B Works", "Overlap Score", "Career Citations", "ORCID", "OpenAlex ID", "Note", "journal_1_openalex_id", "journal_2_openalex_id"],
-                  sorted.map((a, i) => ["author", i + 1, a.enriched?.display_name || shortId(a.id), a.enriched?.last_known_institutions?.[0]?.display_name || [...a.institutions][0] || "", a.worksInA, a.worksInB, a.worksInA + a.worksInB, a.enriched?.cited_by_count ?? "", a.enriched?.orcid || "", a.id, `from journal-overlap · ${journalsA.map(j => j.display_name).join(", ")} × ${journalsB.map(j => j.display_name).join(", ")}`, j1, j2])
+                  sorted.map((a, i) => ["author", i + 1, a.enriched?.display_name || shortId(a.id), a.enriched?.last_known_institutions?.[0]?.display_name || [...a.institutions][0] || "", a.worksInA, a.worksInB, a.worksInA + a.worksInB, a.enriched?.cited_by_count ?? "", a.enriched?.orcid?.replace("https://orcid.org/", "") || "", shortId(a.id), `from journal-overlap · ${journalsA.map(j => j.display_name).join(", ")} × ${journalsB.map(j => j.display_name).join(", ")}`, j1, j2])
                 );
               }} />
             </span>
