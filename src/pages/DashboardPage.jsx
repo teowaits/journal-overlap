@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { C, ghostBtn, PAGE_SIZE } from "../constants.js";
-import { downloadCsv } from "../utils.js";
+import { downloadCsv, shortId } from "../utils.js";
 import { ExportButton } from "../components/shared.jsx";
 import WordCloud from "../components/WordCloud.jsx";
 import AuthorRow from "../components/AuthorRow.jsx";
@@ -37,10 +37,14 @@ export default function DashboardPage({ results, totalOverlap, sortKey, setSortK
             ))}
             <span style={{ marginLeft: "auto", color: C.textMuted, display: "flex", alignItems: "center", gap: 10 }}>
               {sorted.length.toLocaleString()} authors · click row to expand
-              <ExportButton onClick={() => downloadCsv("authors-overlap.csv",
-                ["type", "Rank", "Name", "Institution", "Set A Works", "Set B Works", "Overlap Score", "Career Citations", "ORCID", "OpenAlex ID", "Note"],
-                sorted.map((a, i) => ["author", i + 1, a.enriched?.display_name || a.id.replace("https://openalex.org/",""), a.enriched?.last_known_institutions?.[0]?.display_name || [...a.institutions][0] || "", a.worksInA, a.worksInB, a.worksInA + a.worksInB, a.enriched?.cited_by_count ?? "", a.enriched?.orcid || "", a.id, `from journal-overlap · ${journalsA.map(j => j.display_name).join(", ")} × ${journalsB.map(j => j.display_name).join(", ")}`])
-              )} />
+              <ExportButton onClick={() => {
+                const j1 = journalsA.map(j => shortId(j.id)).join("|");
+                const j2 = journalsB.map(j => shortId(j.id)).join("|");
+                downloadCsv("authors-overlap.csv",
+                  ["type", "Rank", "Name", "Institution", "Set A Works", "Set B Works", "Overlap Score", "Career Citations", "ORCID", "OpenAlex ID", "Note", "journal_1_openalex_id", "journal_2_openalex_id"],
+                  sorted.map((a, i) => ["author", i + 1, a.enriched?.display_name || shortId(a.id), a.enriched?.last_known_institutions?.[0]?.display_name || [...a.institutions][0] || "", a.worksInA, a.worksInB, a.worksInA + a.worksInB, a.enriched?.cited_by_count ?? "", a.enriched?.orcid || "", a.id, `from journal-overlap · ${journalsA.map(j => j.display_name).join(", ")} × ${journalsB.map(j => j.display_name).join(", ")}`, j1, j2])
+                );
+              }} />
             </span>
           </div>
 
