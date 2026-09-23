@@ -36,17 +36,22 @@ function ArticleList({ works, color }) {
   );
 }
 
-export default function AuthorRow({ author, index, fromYear }) {
+export default function AuthorRow({ author, index, fromYear, mode = "overlap" }) {
   const [expanded, setExpanded] = useState(false);
+  const exclusive = mode === "exclusive";
   const inst = author.enriched?.last_known_institutions?.[0]?.display_name || [...author.institutions].slice(0, 1)[0] || "—";
   const totalCitations = author.enriched?.cited_by_count ?? "—";
   const orcid = author.enriched?.orcid;
   const name = author.enriched?.display_name || shortId(author.id);
   const overlapScore = author.worksInA + author.worksInB;
 
+  const gridCols = exclusive
+    ? "36px 1fr 72px 100px 24px"
+    : "36px 1fr 72px 72px 80px 100px 24px";
+
   return (
     <div style={{ background: index % 2 === 0 ? C.surface2 : C.surface, borderBottom: `1px solid ${C.border}` }}>
-      <div className="author-grid-row" onClick={() => setExpanded(e => !e)} style={{ display: "grid", gridTemplateColumns: "36px 1fr 72px 72px 80px 100px 24px", alignItems: "center", gap: 8, padding: "10px 16px", cursor: "pointer" }}
+      <div className="author-grid-row" onClick={() => setExpanded(e => !e)} style={{ display: "grid", gridTemplateColumns: gridCols, alignItems: "center", gap: 8, padding: "10px 16px", cursor: "pointer" }}
         onMouseEnter={e => e.currentTarget.style.background = C.border} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
         <div style={{ fontSize: 11, color: C.textMuted, textAlign: "center" }}>{index + 1}</div>
         <div>
@@ -54,8 +59,12 @@ export default function AuthorRow({ author, index, fromYear }) {
           <div style={{ fontSize: 11, color: C.textMuted, marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{inst}</div>
         </div>
         <div style={{ textAlign: "center" }}><span style={{ background: "rgba(99,179,237,0.15)", color: C.blueLight, borderRadius: 4, padding: "2px 8px", fontSize: 12, fontWeight: 600 }}>{author.worksInA}</span></div>
-        <div style={{ textAlign: "center" }}><span style={{ background: "rgba(246,173,85,0.15)", color: C.amberLight, borderRadius: 4, padding: "2px 8px", fontSize: 12, fontWeight: 600 }}>{author.worksInB}</span></div>
-        <div style={{ textAlign: "center" }}><span style={{ background: "rgba(154,230,180,0.12)", color: C.green, borderRadius: 4, padding: "2px 8px", fontSize: 13, fontWeight: 700 }}>{overlapScore}</span></div>
+        {!exclusive && (
+          <>
+            <div style={{ textAlign: "center" }}><span style={{ background: "rgba(246,173,85,0.15)", color: C.amberLight, borderRadius: 4, padding: "2px 8px", fontSize: 12, fontWeight: 600 }}>{author.worksInB}</span></div>
+            <div style={{ textAlign: "center" }}><span style={{ background: "rgba(154,230,180,0.12)", color: C.green, borderRadius: 4, padding: "2px 8px", fontSize: 13, fontWeight: 700 }}>{overlapScore}</span></div>
+          </>
+        )}
         <div className="hide-mobile" style={{ textAlign: "center", fontSize: 12, color: C.textSecondary }}>{typeof totalCitations === "number" ? totalCitations.toLocaleString() : "—"}</div>
         <div className="hide-mobile" style={{ color: C.textMuted, fontSize: 11, textAlign: "center" }}>{expanded ? "▲" : "▼"}</div>
       </div>
@@ -81,7 +90,9 @@ export default function AuthorRow({ author, index, fromYear }) {
           </div>
           <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
             <div style={{ flex: 1, minWidth: 260 }}><ArticleList works={author.articlesInA} color="A" /></div>
-            <div style={{ flex: 1, minWidth: 260 }}><ArticleList works={author.articlesInB} color="B" /></div>
+            {!exclusive && (
+              <div style={{ flex: 1, minWidth: 260 }}><ArticleList works={author.articlesInB} color="B" /></div>
+            )}
           </div>
         </div>
       )}

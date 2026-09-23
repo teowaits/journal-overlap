@@ -1,5 +1,10 @@
 export const BASE = "https://api.openalex.org";
-export const PER_PAGE = 200;
+/** Preferred page size — confirmed working; costs the same per call as 100. */
+export const PER_PAGE_PREFERRED = 200;
+/** Documented ceiling — fallback if OpenAlex rejects 200. */
+export const PER_PAGE_SAFE = 100;
+/** Active works page size (may be downgraded at runtime — see api.js). */
+export let PER_PAGE = PER_PAGE_PREFERRED;
 export const DEFAULT_FROM_YEAR = 2023;
 export const YEAR_OPTIONS = [2020, 2021, 2022, 2023, 2024, 2025];
 export const CAP_OPTIONS = [500, 1000, 2000, 5000];

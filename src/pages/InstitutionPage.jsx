@@ -3,7 +3,8 @@ import { C } from "../constants.js";
 import { downloadCsv, computeInstitutionOverlap } from "../utils.js";
 import { ExportButton } from "../components/shared.jsx";
 
-export default function InstitutionPage({ results }) {
+export default function InstitutionPage({ results, mode = "overlap" }) {
+  const exclusive = mode === "exclusive";
   const institutions = useMemo(() => computeInstitutionOverlap(results), [results]);
   const [sortKey, setSortKey] = useState("authors");
   const maxAuthors = institutions[0]?.authors || 1;
@@ -22,18 +23,25 @@ export default function InstitutionPage({ results }) {
   );
 
   const top20 = sorted.slice(0, 20);
+  const authorLabel = exclusive ? "Candidate Authors" : "Bridging Authors";
+  const scoreLabel = exclusive ? "Set A Works" : "Overlap Score";
+  const title = exclusive ? "Institutions" : "Institution Overlap";
+  const blurb = exclusive
+    ? "Institutions of candidate authors (published in Set A, not yet in Set B). One author may count for multiple institutions."
+    : "Institutions whose researchers publish in both journal sets. One author may count for multiple institutions.";
 
   return (
     <div style={{ padding: "24px 28px", maxWidth: 1100, margin: "0 auto" }}>
       <div style={{ marginBottom: 20 }}>
         <div style={{ fontSize: 16, fontWeight: 700, color: C.textPrimary, fontFamily: "'IBM Plex Sans',sans-serif", marginBottom: 4 }}>
-          Institution Overlap
+          {title}
         </div>
         <div style={{ fontSize: 12, color: C.textMuted, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <span>Institutions whose researchers bridge both journal sets. One author may count for multiple institutions.
+          <span>{blurb}
           {institutions.length > 1 && ` ${institutions.length} institutions found.`}</span>
-          <ExportButton onClick={() => downloadCsv("institutions-overlap.csv",
-            ["Rank", "Institution", "Bridging Authors", "Total Overlap Works", "Total Citations"],
+          <ExportButton onClick={() => downloadCsv(
+            exclusive ? "institutions-exclusive.csv" : "institutions-overlap.csv",
+            ["Rank", "Institution", authorLabel, exclusive ? "Total Set A Works" : "Total Overlap Works", "Total Citations"],
             sorted.map((inst, i) => [i + 1, inst.name, inst.authors, inst.totalOverlap, inst.totalCitations])
           )} />
         </div>
@@ -41,7 +49,7 @@ export default function InstitutionPage({ results }) {
 
       <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: "20px 24px", marginBottom: 24 }}>
         <div style={{ fontSize: 10, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 16 }}>
-          Top {top20.length} Institutions by Bridging Authors
+          Top {top20.length} Institutions by {authorLabel}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {top20.map((inst, i) => (
@@ -54,7 +62,9 @@ export default function InstitutionPage({ results }) {
                 <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", background: C.border2, position: "relative" }}>
                   <div style={{
                     width: `${(inst.authors / maxAuthors) * 100}%`,
-                    background: `linear-gradient(90deg, ${C.blue}cc, ${C.amber}cc)`,
+                    background: exclusive
+                      ? `linear-gradient(90deg, ${C.blue}cc, ${C.green}cc)`
+                      : `linear-gradient(90deg, ${C.blue}cc, ${C.amber}cc)`,
                     transition: "width 0.5s ease",
                   }} />
                 </div>
@@ -70,8 +80,8 @@ export default function InstitutionPage({ results }) {
       <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 10, fontSize: 11 }}>
         <span style={{ color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Sort:</span>
         {[
-          { key: "authors", label: "Bridging Authors" },
-          { key: "overlap", label: "Total Overlap Score" },
+          { key: "authors", label: authorLabel },
+          { key: "overlap", label: exclusive ? "Total Set A Works" : "Total Overlap Score" },
           { key: "citations", label: "Total Citations" },
         ].map(({ key, label }) => (
           <button key={key} onClick={() => setSortKey(key)} style={{
@@ -90,7 +100,7 @@ export default function InstitutionPage({ results }) {
           <div>#</div>
           <div>Institution</div>
           <div style={{ textAlign: "center", color: C.blueLight }}>Authors</div>
-          <div style={{ textAlign: "center" }}>Overlap Score</div>
+          <div style={{ textAlign: "center" }}>{scoreLabel}</div>
           <div className="hide-mobile" style={{ textAlign: "center" }}>Total Citations</div>
         </div>
         {sorted.map((inst, i) => (
